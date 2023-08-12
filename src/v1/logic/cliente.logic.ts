@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
-import * as fs from "fs";
-import { ClienteDTO } from "../interfaces/dtos";
+import { ClienteDTO, userSchema } from "../types/dtos";
 import { ClienteRepository } from "../repositories";
-import { BadRequestError, ConflictRequestError } from "../../helpers/errors";
-import { ClienteInterface } from "../interfaces";
+import { BadRequestError } from "../../helpers/errors";
+
 export class ClienteLogic {
    private repository: ClienteRepository;
 
@@ -44,7 +43,6 @@ export class ClienteLogic {
    async createCliente(req: Request, res: Response): Promise<ClienteDTO> {
       try {
          const { nome, cpf, data_nasc, telefone } = req.body;
-         console.log(req.body, "req body");
          const newCliente = {
             nome: nome,
             cpf: cpf,
@@ -53,9 +51,14 @@ export class ClienteLogic {
             ativo: 1,
          };
 
+         const validate = await userSchema.validate(newCliente);
+
          const response = await this.repository.createCliente(newCliente);
          return response;
-      } catch (error) {
+      } catch (error: any) {
+         if (error.errors) {
+            throw new BadRequestError(error.errors);
+         }
          throw error;
       }
    }
@@ -76,6 +79,17 @@ export class ClienteLogic {
          };
 
          const response = await this.repository.updateCliente(updatedCliente);
+         return response;
+      } catch (error) {
+         throw error;
+      }
+   }
+   async deleteCliente(req: Request, res: Response): Promise<ClienteDTO> {
+      try {
+         const { clienteId } = req.params;
+         const response = await this.repository.deleteCliente(
+            Number(clienteId)
+         );
          return response;
       } catch (error) {
          throw error;

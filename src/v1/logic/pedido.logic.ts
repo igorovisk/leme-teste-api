@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
-import { PedidoDTO } from "../interfaces/dtos";
-import { PedidoInterface } from "../interfaces";
+import { PedidoDTO } from "../types/dtos";
+import { PedidoInterface } from "../types/interface";
+import { PedidoStatusEnum } from "../types/enums";
 import { PedidoRepository } from "../repositories";
+import { BadRequestError } from "../../helpers/errors";
 
 export class PedidoLogic {
    private repository: PedidoRepository;
@@ -30,7 +32,7 @@ export class PedidoLogic {
 
    async createPedido(req: Request, res: Response): Promise<PedidoDTO> {
       try {
-         const { produto, valor, data, ativo, imagens } = req.body;
+         const { produto, valor, data, ativo } = req.body;
          const { clienteId } = req.params;
 
          const newPedido: PedidoInterface = {
@@ -39,7 +41,7 @@ export class PedidoLogic {
             produto: produto,
             valor: valor,
             ativo: ativo,
-            pedido_status_id: 0,
+            pedido_status_id: 1,
          };
 
          const response = await this.repository.createPedido(newPedido);
@@ -55,6 +57,9 @@ export class PedidoLogic {
             req.body;
          const { clienteId, pedidoId } = req.params;
 
+         if (!Object.values(PedidoStatusEnum).includes(pedido_status)) {
+            throw new BadRequestError("Invalid pedido_status value");
+         }
          const updatedPedido = {
             id: Number(pedidoId),
             cliente_id: Number(clienteId),
@@ -67,7 +72,6 @@ export class PedidoLogic {
          };
 
          const response = await this.repository.updatePedido(updatedPedido);
-
          return response;
       } catch (error) {
          throw error;
@@ -77,9 +81,7 @@ export class PedidoLogic {
    async deletePedido(req: Request, res: Response): Promise<PedidoDTO> {
       try {
          const { pedidoId } = req.params;
-
          const response = await this.repository.deletePedido(Number(pedidoId));
-
          return response;
       } catch (error) {
          throw error;

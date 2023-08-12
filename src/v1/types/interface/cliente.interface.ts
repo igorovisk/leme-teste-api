@@ -1,5 +1,5 @@
 import { Pedidos } from "@prisma/client";
-import { PedidoDTO } from "./dtos";
+import { PedidoDTO } from "../dtos";
 
 export interface ClienteInterface {
    id?: number;

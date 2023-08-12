@@ -1,5 +1,5 @@
-import { ClienteDTO } from "../interfaces/dtos";
-import { ClienteInterface } from "../interfaces";
+import { ClienteDTO } from "../types/dtos";
+import { ClienteInterface } from "../types/interface";
 import { Pedidos, PrismaClient } from "@prisma/client";
 import { BadRequestError } from "../../helpers/errors";
 
@@ -29,7 +29,7 @@ export class ClienteRepository {
       }
    }
 
-   async getClienteById(id: number): Promise<ClienteDTO | {}> {
+   async getClienteById(id: number): Promise<ClienteDTO> {
       try {
          const cliente = await prisma.clientes.findUnique({
             where: { id: id },
@@ -38,7 +38,7 @@ export class ClienteRepository {
             },
          });
          if (!cliente) {
-            return {};
+            throw new Error("Not client found with this id");
          }
          return cliente;
       } catch (error: any) {
@@ -48,10 +48,18 @@ export class ClienteRepository {
 
    async createCliente(cliente: ClienteInterface): Promise<ClienteDTO> {
       try {
+         const findUser = await prisma.clientes.findUnique({
+            where: { cpf: cliente.cpf },
+         });
+         if (findUser) {
+            throw new BadRequestError(
+               "Error creating user. This cpf already is registered"
+            );
+         }
          const newcliente = await prisma.clientes.create({ data: cliente });
          return newcliente;
       } catch (error: any) {
-         throw new BadRequestError(error.message);
+         throw error;
       }
    }
 
@@ -59,8 +67,16 @@ export class ClienteRepository {
       updatedclienteData: UpdatedClienteDate
    ): Promise<ClienteDTO> {
       try {
-         const updatedCliente = await prisma.clientes.update({
+         const findCliente = await prisma.clientes.findUnique({
             where: { id: updatedclienteData.id },
+         });
+         if (!findCliente) {
+            throw new BadRequestError(
+               "Error updating user. This user does not exist"
+            );
+         }
+         const updatedCliente = await prisma.clientes.update({
+            where: { id: findCliente.id },
             data: updatedclienteData,
          });
 
@@ -75,15 +91,44 @@ export class ClienteRepository {
          if (!cpf) {
             throw new BadRequestError("Cpf is missing..");
          }
-         const user = await prisma.clientes.findFirst({
+         const user = await prisma.clientes.findUnique({
             where: {
                cpf: cpf,
             },
          });
          if (!user) {
-            throw new BadRequestError("No client found");
+            throw new BadRequestError("No client found with this cpf");
          }
          return user;
+      } catch (error) {
+         throw error;
+      }
+   }
+
+   async deleteCliente(clienteId: number): Promise<ClienteDTO> {
+      try {
+         const findCliente = await prisma.clientes.findUnique({
+            where: { id: clienteId },
+         });
+         console.log(findCliente, "findCliente");
+         if (!findCliente) {
+            console.log("caiu no erro");
+            throw new BadRequestError("No client found with this id");
+         }
+         const deletedClientObject = {
+            id: findCliente.id,
+            nome: findCliente.nome,
+            cpf: findCliente.cpf,
+            data_nasc: findCliente.data_nasc,
+            telefone: findCliente.telefone,
+            ativo: 0,
+         };
+
+         const deletedCliente = await prisma.clientes.update({
+            where: { id: deletedClientObject.id },
+            data: deletedClientObject,
+         });
+         return deletedCliente;
       } catch (error) {
          throw error;
       }

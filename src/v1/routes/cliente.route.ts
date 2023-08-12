@@ -27,5 +27,10 @@ router
    .post(async (req: Request, res: Response, next: NextFunction) => {
       await controller.createCliente(req, res, next);
    });
+router
+   .route("/clientes/:clienteId")
+   .patch(async (req: Request, res: Response, next: NextFunction) => {
+      await controller.deleteCliente(req, res, next);
+   });
 
 export { router as ClienteRouter };

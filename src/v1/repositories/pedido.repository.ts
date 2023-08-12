@@ -1,6 +1,7 @@
-import { PedidoInterface } from "../interfaces";
+import { PedidoInterface } from "../types/interface";
 import { PrismaClient } from "@prisma/client";
-import { PedidoDTO } from "../interfaces/dtos";
+import { PedidoDTO } from "../types/dtos";
+import { BadRequestError } from "../../helpers/errors";
 const prisma = new PrismaClient();
 
 export class PedidoRepository {
@@ -14,9 +15,12 @@ export class PedidoRepository {
          where: {
             id: id,
          },
+         include: {
+            pedido_status: true,
+         },
       });
       if (!pedido) {
-         return {};
+         throw new Error("No order found with this id");
       }
       return pedido;
    }
@@ -35,9 +39,19 @@ export class PedidoRepository {
    }
 
    async deletePedido(pedidoId: number): Promise<PedidoDTO> {
-      const deletedPedido = await prisma.pedidos.delete({
-         where: { id: pedidoId },
-      });
-      return deletedPedido;
+      try {
+         const findPedido = await prisma.pedidos.findUnique({
+            where: { id: pedidoId },
+         });
+         if (!findPedido) {
+            throw new BadRequestError("No order found with this id");
+         }
+         const deletedPedido = await prisma.pedidos.delete({
+            where: { id: pedidoId },
+         });
+         return deletedPedido;
+      } catch (error: any) {
+         throw error;
+      }
    }
 }

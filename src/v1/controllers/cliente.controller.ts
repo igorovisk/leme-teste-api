@@ -34,4 +34,8 @@ export class ClienteController {
       const response = await this.logic.getClienteByCpf(req, res);
       return res.status(200).send(response);
    }
+   async deleteCliente(req: Request, res: Response, next: NextFunction) {
+      const response = await this.logic.deleteCliente(req, res);
+      return res.status(200).send(response);
+   }
 }
