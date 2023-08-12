@@ -30,7 +30,7 @@ router
 
 router
    .route("/clientes/:clienteId/pedidos/:pedidoId")
-   .delete(async (req: Request, res: Response, next: NextFunction) => {
+   .patch(async (req: Request, res: Response, next: NextFunction) => {
       await controller.deletePedido(req, res, next);
    });
 

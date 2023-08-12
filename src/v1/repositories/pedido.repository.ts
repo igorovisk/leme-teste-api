@@ -46,8 +46,21 @@ export class PedidoRepository {
          if (!findPedido) {
             throw new BadRequestError("No order found with this id");
          }
-         const deletedPedido = await prisma.pedidos.delete({
-            where: { id: pedidoId },
+         console.log(findPedido, "findPedido");
+         const deletedPedidoObj = {
+            id: Number(pedidoId),
+            cliente_id: Number(findPedido.cliente_id),
+            data: new Date(findPedido.data),
+            produto: findPedido.produto,
+            valor: findPedido.valor,
+            ativo: 0,
+            // imagens: findPedido.imagens,
+            pedido_status_id: findPedido.pedido_status_id,
+         };
+
+         const deletedPedido = await prisma.pedidos.update({
+            where: { id: deletedPedidoObj.id },
+            data: deletedPedidoObj,
          });
          return deletedPedido;
       } catch (error: any) {

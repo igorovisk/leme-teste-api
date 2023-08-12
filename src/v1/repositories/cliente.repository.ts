@@ -110,9 +110,7 @@ export class ClienteRepository {
          const findCliente = await prisma.clientes.findUnique({
             where: { id: clienteId },
          });
-         console.log(findCliente, "findCliente");
          if (!findCliente) {
-            console.log("caiu no erro");
             throw new BadRequestError("No client found with this id");
          }
          const deletedClientObject = {
