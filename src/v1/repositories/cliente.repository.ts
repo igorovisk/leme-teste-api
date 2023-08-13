@@ -1,7 +1,7 @@
 import { ClienteDTO } from "../types/dtos";
 import { ClienteInterface } from "../types/interface";
 import { Pedidos, PrismaClient } from "@prisma/client";
-import { BadRequestError } from "../../helpers/errors";
+import { BadRequestError } from "../helpers/errors";
 
 const prisma = new PrismaClient();
 

@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { PedidoImagensDTO } from "../types/dtos";
 import { PedidoImagensRepository } from "../repositories";
-import { BadRequestError } from "../../helpers/errors";
-import upload from "../../helpers/multer";
-import { resizeAndSaveImages } from "../../helpers/resizeImages";
+import { BadRequestError } from "../helpers/errors";
+import upload from "../helpers/multer";
+import { resizeAndSaveImages } from "../helpers/resizeImages";
 export class PedidoImagensLogic {
    private repository: PedidoImagensRepository;
    constructor() {

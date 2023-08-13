@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ClienteDTO, createUserSchema, updateUserSchema } from "../types/dtos";
 import { ClienteRepository } from "../repositories";
-import { BadRequestError } from "../../helpers/errors";
+import { BadRequestError } from "../helpers/errors";
 import { isCNPJ, formatToCNPJ, isCPF, formatToCPF } from "brazilian-values";
 export class ClienteLogic {
    private repository: ClienteRepository;

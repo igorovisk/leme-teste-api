@@ -1,7 +1,7 @@
 import { PedidoInterface, UpdatePedidoInterface } from "../types/interface";
 import { PrismaClient } from "@prisma/client";
 import { PedidoDTO, createPedidoSchema } from "../types/dtos";
-import { BadRequestError } from "../../helpers/errors";
+import { BadRequestError } from "../helpers/errors";
 const prisma = new PrismaClient();
 import fs from "fs";
 export class PedidoRepository {

@@ -1,7 +1,7 @@
 import { PedidoImagensInterface } from "../types/interface";
 import { PrismaClient } from "@prisma/client";
 import { PedidoImagensDTO } from "../types/dtos";
-import { BadRequestError } from "../../helpers/errors";
+import { BadRequestError } from "../helpers/errors";
 
 const prisma = new PrismaClient();
 

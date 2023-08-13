@@ -3,7 +3,7 @@ import { PedidoDTO, createPedidoSchema } from "../types/dtos";
 import { PedidoInterface } from "../types/interface";
 import { PedidoStatusEnum } from "../types/enums";
 import { PedidoRepository } from "../repositories";
-import { BadRequestError } from "../../helpers/errors";
+import { BadRequestError } from "../helpers/errors";
 
 export class PedidoLogic {
    private repository: PedidoRepository;

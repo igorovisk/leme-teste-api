@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { PedidoImagensController } from "../controllers";
-import upload from "../../helpers/multer";
+import upload from "../helpers/multer";
 
 const controller = new PedidoImagensController();
 const router = Router();
