@@ -10,91 +10,24 @@ export class PedidoImagensLogic {
       this.repository = new PedidoImagensRepository();
    }
 
-   async getAllPedidoImagens(
-      req: Request,
-      res: Response
-   ): Promise<PedidoImagensDTO[]> {
-      try {
-         const response = await this.repository.getAllPedidoImagens();
-         return response;
-      } catch (error) {
-         throw error;
-      }
-   }
-
-   async getPedidoImagensById(
-      req: Request,
-      res: Response
-   ): Promise<PedidoImagensDTO | {}> {
-      try {
-         const { pedidoId } = req.params;
-         const response = await this.repository.getPedidoImagensById(
-            Number(pedidoId)
-         );
-         return response;
-      } catch (error) {
-         throw error;
-      }
-   }
-
-   async createPedidoImagens(req: Request, res: Response): Promise<string> {
-      try {
-         const { pedidoId } = req.params;
-         const { file } = req;
-         console.log(req.files, "REQ FILES");
-         console.log(req.file, "REQ FILE");
-         if (!file) {
-            throw new BadRequestError("No file..");
-         }
-
-         const imagem = {
-            src: file.path,
-         };
-
-         // const images = [imagem, capa]
-         // pedido_id: Number(pedidoId),
-         // imagem: imagem,
-         // capa: capa,
-         // };
-         const uploadHelper = upload.single(imagem.src);
-         // await createPedidoImagensSchema.validate(imagem);
-
-         // if (response) {
-         //    const imagemObj = {
-         //       pedido_id: response.id,
-         //       imagem: "imagem",
-         //       capa: "capa",
-         //    };
-         //    console.log(imagemObj, "response");
-         // }
-
-         // const response = await this.repository.createPedidoImagens(imagem);
-         return "response";
-      } catch (error: any) {
-         if (error.errors) {
-            throw new BadRequestError(error.errors);
-         }
-         throw error;
-      }
-   }
-
    async updatePedidoImagens(
       req: Request,
       res: Response
    ): Promise<PedidoImagensDTO> {
       try {
-         const { imagem, capa } = req.body;
-         const { pedidoId } = req.params;
-
-         const updatedPedidoImagens = {
+         const { pedidoId, pedidoImagemId } = req.params;
+         const { file } = req;
+         if (!file) {
+            throw new BadRequestError("No file..");
+         }
+         const capa = await resizeAndSaveImages(file);
+         const data = {
+            id: Number(pedidoImagemId),
+            imagem: file.path,
             pedido_id: Number(pedidoId),
-            imagem: imagem,
             capa: capa,
          };
-         console.log(updatedPedidoImagens, "CCCCC");
-         const response = await this.repository.updatePedidoImagens(
-            updatedPedidoImagens
-         );
+         const response = await this.repository.updatePedidoImagens(data);
          return response;
       } catch (error: any) {
          if (error.errors) {
@@ -109,9 +42,9 @@ export class PedidoImagensLogic {
       res: Response
    ): Promise<PedidoImagensDTO> {
       try {
-         const { pedidoId } = req.params;
+         const { pedidoImagemId } = req.params;
          const response = await this.repository.deletePedidoImagens(
-            Number(pedidoId)
+            Number(pedidoImagemId)
          );
          return response;
       } catch (error) {
@@ -132,8 +65,7 @@ export class PedidoImagensLogic {
             pedido_id: Number(pedidoId),
             capa: capa,
          };
-         console.log(data, "data");
-         return this.repository.createPedidoImagens(data);
+         return this.repository.uploadPedidoImage(data);
       } catch (error: any) {
          if (error.errors) {
             throw new BadRequestError(error.errors);

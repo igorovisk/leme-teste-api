@@ -6,28 +6,7 @@ import { BadRequestError } from "../../helpers/errors";
 const prisma = new PrismaClient();
 
 export class PedidoImagensRepository {
-   async getAllPedidoImagens(): Promise<PedidoImagensDTO[]> {
-      const pedidos = await prisma.pedido_imagens.findMany();
-      return pedidos;
-   }
-
-   async getPedidoImagensById(id: number): Promise<PedidoImagensDTO | {}> {
-      const pedido = await prisma.pedidos.findUnique({
-         where: {
-            id: id,
-         },
-         include: {
-            pedido_status: true,
-            pedido_imagens: true,
-         },
-      });
-      if (!pedido) {
-         throw new Error("No order found with this id");
-      }
-      return pedido;
-   }
-
-   async createPedidoImagens(
+   async uploadPedidoImage(
       data: PedidoImagensInterface
    ): Promise<PedidoImagensDTO> {
       const findPedido = await prisma.pedidos.findUnique({
@@ -45,11 +24,20 @@ export class PedidoImagensRepository {
    }
 
    async updatePedidoImagens(
-      pedido: PedidoImagensInterface
+      data: PedidoImagensInterface
    ): Promise<PedidoImagensDTO> {
+      const findPedido = await prisma.pedidos.findUnique({
+         where: { id: data.pedido_id },
+      });
+      if (!findPedido) {
+         throw new BadRequestError(
+            "Error uploading this image. No pedido found with this id"
+         );
+      }
+      console.log(findPedido, "findPedido");
       const updatedPedidoImagens = await prisma.pedido_imagens.update({
-         where: { id: pedido.id },
-         data: pedido,
+         where: { id: data.id },
+         data: data,
       });
       return updatedPedidoImagens;
    }

@@ -23,18 +23,19 @@ model Clientes {
 }
 
 model Pedidos {
-  id               Int              @id @unique @default(autoincrement())
-  produto          String           @db.VarChar(255)
-  valor            Decimal          @db.Decimal(10, 2)
-  data             DateTime
-  cliente_id       Int
-  cliente          Clientes         @relation(fields: [cliente_id], references: [id])
-  pedido_status_id Int
-  pedido_status    Pedidos_status   @relation(fields: [pedido_status_id], references: [id])
-  ativo            Int
-  createdAt        DateTime         @default(now()) @map("created_at")
-  updatedAt        DateTime         @default(now()) @map("updated_at")
-  pedido_imagens   Pedido_imagens[] @relation("pedido_imagens")
+  id                Int              @id @unique @default(autoincrement())
+  produto           String           @db.VarChar(255)
+  valor             Decimal          @db.Decimal(10, 2)
+  data              DateTime
+  cliente_id        Int
+  cliente           Clientes         @relation(fields: [cliente_id], references: [id])
+  pedido_status_id  Int
+  pedido_status     Pedidos_status   @relation(fields: [pedido_status_id], references: [id])
+  ativo             Int
+  createdAt         DateTime         @default(now()) @map("created_at")
+  updatedAt         DateTime         @default(now()) @map("updated_at")
+  pedido_imagens_id Int?
+  pedido_imagens    Pedido_imagens[] @relation("pedido_imagens")
 
   @@map("pedidos")
 }

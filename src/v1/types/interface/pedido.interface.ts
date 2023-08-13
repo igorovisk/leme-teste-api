@@ -8,6 +8,7 @@ export interface PedidoInterface {
    ativo: number;
    cliente_id: number;
    pedido_status_id: number;
+   pedido_imagens_id?: number;
 }
 
 export interface UpdatePedidoInterface {
@@ -17,4 +18,5 @@ export interface UpdatePedidoInterface {
    data: Date;
    cliente_id: number;
    pedido_status_id: number;
+   pedido_imagens_id?: number;
 }
