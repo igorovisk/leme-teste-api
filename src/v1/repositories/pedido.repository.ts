@@ -1,9 +1,9 @@
 import { PedidoInterface } from "../types/interface";
 import { PrismaClient } from "@prisma/client";
-import { PedidoDTO } from "../types/dtos";
+import { PedidoDTO, createPedidoSchema } from "../types/dtos";
 import { BadRequestError } from "../../helpers/errors";
 const prisma = new PrismaClient();
-
+import fs from "fs";
 export class PedidoRepository {
    async getAllPedidos(): Promise<PedidoDTO[]> {
       const pedidos = await prisma.pedidos.findMany();
@@ -17,6 +17,7 @@ export class PedidoRepository {
          },
          include: {
             pedido_status: true,
+            pedido_imagens: true,
          },
       });
       if (!pedido) {
@@ -26,6 +27,15 @@ export class PedidoRepository {
    }
 
    async createPedido(pedido: PedidoInterface): Promise<PedidoDTO> {
+      await createPedidoSchema.validate(pedido);
+      const findCliente = await prisma.clientes.findUnique({
+         where: { id: pedido.cliente_id },
+      });
+      if (!findCliente) {
+         throw new BadRequestError(
+            "Error creating order. the clientId provided does belong to any client"
+         );
+      }
       const newPedido = await prisma.pedidos.create({ data: pedido });
       return newPedido;
    }
@@ -46,7 +56,6 @@ export class PedidoRepository {
          if (!findPedido) {
             throw new BadRequestError("No order found with this id");
          }
-         console.log(findPedido, "findPedido");
          const deletedPedidoObj = {
             id: Number(pedidoId),
             cliente_id: Number(findPedido.cliente_id),
@@ -66,5 +75,27 @@ export class PedidoRepository {
       } catch (error: any) {
          throw error;
       }
+   }
+
+   async exportPedidos(): Promise<string> {
+      const pedidos = await prisma.pedidos.findMany();
+      const csvData = pedidos
+         .map((row) => Object.values(row).join(","))
+         .join("\n");
+
+      const csvHeader = Object.keys(pedidos[0]).join(",");
+      const csvContent = `${csvHeader}\n${csvData}`;
+      const outputPath = "output.csv";
+      fs.writeFile(outputPath, csvContent, "utf-8", (error) => {
+         if (error) {
+            console.error("Error writing CSV file:", error);
+            throw error;
+         } else {
+            console.log(
+               `CSV file "${outputPath}" has been successfully written.`
+            );
+         }
+      });
+      return csvContent;
    }
 }

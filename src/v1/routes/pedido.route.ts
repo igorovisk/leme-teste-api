@@ -34,4 +34,10 @@ router
       await controller.deletePedido(req, res, next);
    });
 
+router
+   .route("/pedidos/exportcsv")
+   .get(async (req: Request, res: Response, next: NextFunction) => {
+      await controller.exportPedidos(req, res, next);
+   });
+
 export { router as PedidoRouter };

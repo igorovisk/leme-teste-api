@@ -1,4 +1,3 @@
-import { Clientes, Pedidos_imagens, Pedidos_status } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime";
 
 export interface PedidoInterface {

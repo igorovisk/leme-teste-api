@@ -32,4 +32,9 @@ export class PedidoController {
       const response = await this.logic.deletePedido(req, res);
       return res.status(200).send(response);
    }
+
+   async exportPedidos(req: Request, res: Response, next: NextFunction) {
+      const response = await this.logic.exportPedidos(req, res);
+      return res.status(200).send(response);
+   }
 }

@@ -1,6 +1,6 @@
 import "express-async-errors";
 import express, { Express, Request, Response, json } from "express";
-import { ClienteRouter, PedidoRouter } from "./v1/routes";
+import { ClienteRouter, PedidoRouter, PedidoImagensRouter } from "./v1/routes";
 import { errorMiddleware } from "./v1/middlewares";
 require("dotenv").config();
 const port = process.env.PORT;
@@ -25,7 +25,7 @@ app.get("/", function (req: Request, res: Response) {
 
 app.use(cors(corsOrigin));
 app.use(json());
-app.use(ClienteRouter, PedidoRouter);
+app.use(ClienteRouter, PedidoRouter, PedidoImagensRouter);
 app.use(errorMiddleware);
 
 Server.init(app);

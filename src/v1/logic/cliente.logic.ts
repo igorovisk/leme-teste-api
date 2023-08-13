@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { ClienteDTO, userSchema } from "../types/dtos";
+import { ClienteDTO, createUserSchema, updateUserSchema } from "../types/dtos";
 import { ClienteRepository } from "../repositories";
 import { BadRequestError } from "../../helpers/errors";
-
+import { isCNPJ, formatToCNPJ, isCPF, formatToCPF } from "brazilian-values";
 export class ClienteLogic {
    private repository: ClienteRepository;
 
@@ -43,15 +43,17 @@ export class ClienteLogic {
    async createCliente(req: Request, res: Response): Promise<ClienteDTO> {
       try {
          const { nome, cpf, data_nasc, telefone } = req.body;
+         if (!isCPF(cpf)) throw new BadRequestError("CPF is not valid.");
+         const formattedCpf = formatToCPF(cpf);
          const newCliente = {
             nome: nome,
-            cpf: cpf,
+            cpf: formattedCpf,
             data_nasc: new Date(data_nasc),
             telefone: telefone,
             ativo: 1,
          };
 
-         const validate = await userSchema.validate(newCliente);
+         await createUserSchema.validate(newCliente);
 
          const response = await this.repository.createCliente(newCliente);
          return response;
@@ -67,20 +69,23 @@ export class ClienteLogic {
       res: Response
    ): Promise<ClienteDTO | undefined> {
       try {
-         const { nome, cpf, data_nasc, telefone, ativo } = req.body;
-
+         const { nome, cpf, data_nasc, telefone } = req.body;
+         if (!isCPF(cpf)) throw new BadRequestError("CPF is not valid.");
+         const formattedCpf = formatToCPF(cpf);
          const updatedCliente = {
             id: Number(req.params.clienteId),
             nome: nome,
-            cpf: cpf,
+            cpf: formattedCpf,
             data_nasc: new Date(data_nasc),
             telefone: telefone,
-            ativo: ativo,
          };
-
+         await updateUserSchema.validate(updatedCliente);
          const response = await this.repository.updateCliente(updatedCliente);
          return response;
-      } catch (error) {
+      } catch (error: any) {
+         if (error.errors) {
+            throw new BadRequestError(error.errors);
+         }
          throw error;
       }
    }

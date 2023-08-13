@@ -11,7 +11,6 @@ type UpdatedClienteDate = {
    cpf: string;
    data_nasc: Date;
    telefone: string;
-   ativo: number;
 };
 
 export class ClienteRepository {
@@ -53,7 +52,7 @@ export class ClienteRepository {
          });
          if (findUser) {
             throw new BadRequestError(
-               "Error creating user. This cpf already is registered"
+               "Error creating client. This cpf already is registered"
             );
          }
          const newcliente = await prisma.clientes.create({ data: cliente });
@@ -72,12 +71,17 @@ export class ClienteRepository {
          });
          if (!findCliente) {
             throw new BadRequestError(
-               "Error updating user. This user does not exist"
+               "Error updating client. This client does not exist"
             );
          }
+         const updateClientObj = {
+            ...updatedclienteData,
+            ativo: findCliente.ativo,
+         };
+
          const updatedCliente = await prisma.clientes.update({
             where: { id: findCliente.id },
-            data: updatedclienteData,
+            data: updateClientObj,
          });
 
          return updatedCliente;
@@ -91,15 +95,15 @@ export class ClienteRepository {
          if (!cpf) {
             throw new BadRequestError("Cpf is missing..");
          }
-         const user = await prisma.clientes.findUnique({
+         const client = await prisma.clientes.findUnique({
             where: {
                cpf: cpf,
             },
          });
-         if (!user) {
+         if (!client) {
             throw new BadRequestError("No client found with this cpf");
          }
-         return user;
+         return client;
       } catch (error) {
          throw error;
       }

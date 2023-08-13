@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { PedidoDTO } from "../types/dtos";
+import { PedidoDTO, createPedidoSchema } from "../types/dtos";
 import { PedidoInterface } from "../types/interface";
 import { PedidoStatusEnum } from "../types/enums";
 import { PedidoRepository } from "../repositories";
@@ -32,7 +32,7 @@ export class PedidoLogic {
 
    async createPedido(req: Request, res: Response): Promise<PedidoDTO> {
       try {
-         const { produto, valor, data, ativo } = req.body;
+         const { produto, valor, data, imagem } = req.body;
          const { clienteId } = req.params;
 
          const newPedido: PedidoInterface = {
@@ -40,25 +40,40 @@ export class PedidoLogic {
             data: new Date(data),
             produto: produto,
             valor: valor,
-            ativo: ativo,
+            ativo: 1,
             pedido_status_id: 1,
          };
-
+         await createPedidoSchema.validate(newPedido);
          const response = await this.repository.createPedido(newPedido);
+
+         if (response) {
+            const imagemObj = {
+               pedido_id: response.id,
+               imagem: "imagem",
+               capa: "capa",
+            };
+            console.log(imagemObj, "response");
+         }
          return response;
-      } catch (error) {
+      } catch (error: any) {
+         if (error.errors) {
+            throw new BadRequestError(error.errors);
+         }
          throw error;
       }
    }
 
    async updatePedido(req: Request, res: Response): Promise<PedidoDTO> {
       try {
-         const { produto, valor, data, ativo, imagens, pedido_status } =
+         const { produto, valor, data, ativo, imagens, pedido_status_id } =
             req.body;
          const { clienteId, pedidoId } = req.params;
-
-         if (!Object.values(PedidoStatusEnum).includes(pedido_status)) {
-            throw new BadRequestError("Invalid pedido_status value");
+         if (
+            !Object.values(PedidoStatusEnum).includes(Number(pedido_status_id))
+         ) {
+            throw new BadRequestError(
+               "Invalid pedido_status value, Pedido Status must be: 1 - Solicitado | 2 - Concluído | 3 - Cancelado"
+            );
          }
          const updatedPedido = {
             id: Number(pedidoId),
@@ -68,12 +83,15 @@ export class PedidoLogic {
             valor: valor,
             ativo: ativo,
             imagens: imagens,
-            pedido_status_id: pedido_status,
+            pedido_status_id: pedido_status_id,
          };
 
          const response = await this.repository.updatePedido(updatedPedido);
          return response;
-      } catch (error) {
+      } catch (error: any) {
+         if (error.errors) {
+            throw new BadRequestError(error.errors);
+         }
          throw error;
       }
    }
@@ -82,6 +100,15 @@ export class PedidoLogic {
       try {
          const { pedidoId } = req.params;
          const response = await this.repository.deletePedido(Number(pedidoId));
+         return response;
+      } catch (error) {
+         throw error;
+      }
+   }
+
+   async exportPedidos(req: Request, res: Response): Promise<string> {
+      try {
+         const response = await this.repository.exportPedidos();
          return response;
       } catch (error) {
          throw error;

@@ -1,4 +1,4 @@
-export interface PedidosImagensDTO {
+export interface PedidoImagensDTO {
    id: number;
    pedido_id: number;
    imagem: string;
