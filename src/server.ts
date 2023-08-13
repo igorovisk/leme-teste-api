@@ -2,6 +2,7 @@ import "express-async-errors";
 import express, { Express, Request, Response, json } from "express";
 import { ClienteRouter, PedidoRouter, PedidoImagensRouter } from "./v1/routes";
 import { errorMiddleware } from "./v1/middlewares";
+
 require("dotenv").config();
 const port = process.env.PORT;
 var cors = require("cors");

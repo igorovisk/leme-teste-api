@@ -32,4 +32,9 @@ export class PedidoImagensController {
       const response = await this.logic.deletePedidoImagens(req, res);
       return res.status(200).send(response);
    }
+
+   async uploadPedidoImage(req: Request, res: Response, next: NextFunction) {
+      const response = await this.logic.uploadPedidoImage(req, res);
+      res.status(200).send({ message: "File successfully upload", response });
+   }
 }

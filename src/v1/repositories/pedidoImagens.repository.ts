@@ -28,11 +28,10 @@ export class PedidoImagensRepository {
    }
 
    async createPedidoImagens(
-      pedido: PedidoImagensInterface
+      data: PedidoImagensInterface
    ): Promise<PedidoImagensDTO> {
-      // await createPedidoImagensSchema.validate(pedido);
       const findPedido = await prisma.pedidos.findUnique({
-         where: { id: pedido.id },
+         where: { id: data.pedido_id },
       });
       if (!findPedido) {
          throw new BadRequestError(
@@ -40,7 +39,7 @@ export class PedidoImagensRepository {
          );
       }
       const newPedidoImagens = await prisma.pedido_imagens.create({
-         data: pedido,
+         data: data,
       });
       return newPedidoImagens;
    }
