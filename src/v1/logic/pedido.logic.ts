@@ -32,24 +32,24 @@ export class PedidoLogic {
 
    async createPedido(req: Request, res: Response): Promise<PedidoDTO> {
       try {
-         const { produto, valor, data, imagem } = req.body;
+         const { produto, valor, data, imagem, pedido_status_id } = req.body;
          const { clienteId } = req.params;
-
          const newPedido: PedidoInterface = {
             cliente_id: Number(clienteId),
             data: new Date(data),
             produto: produto,
             valor: valor,
             ativo: 1,
-            pedido_status_id: 1,
+            pedido_status_id: pedido_status_id,
          };
-         await createPedidoSchema.validate(newPedido);
+         console.log(newPedido, "newPedido");
+         // await createPedidoSchema.validate(newPedido);
          const response = await this.repository.createPedido(newPedido);
 
          return response;
       } catch (error: any) {
          if (error.errors) {
-            throw new BadRequestError(error.errors);
+            throw new BadRequestError(error.errors[0]);
          }
          throw error;
       }
@@ -66,10 +66,8 @@ export class PedidoLogic {
                "Invalid pedido_status value, Pedido Status must be: 1 - Solicitado | 2 - Concluído | 3 - Cancelado"
             );
          }
-         if (Number(valor).toFixed(2).replace(".", "").length > 10) {
-            throw new BadRequestError(
-               "Invalid valor. Valor must have at most 10 characters."
-            );
+         if (Number(valor)?.toFixed(2)?.replace(".", "").length > 10) {
+            throw new BadRequestError("Valor inválido.");
          }
          const updatedPedido = {
             id: Number(pedidoId),
@@ -85,7 +83,7 @@ export class PedidoLogic {
          return response;
       } catch (error: any) {
          if (error.errors) {
-            throw new BadRequestError(error.errors);
+            throw new BadRequestError(error.errors[0]);
          }
          throw error;
       }

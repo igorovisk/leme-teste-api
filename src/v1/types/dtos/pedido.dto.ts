@@ -19,7 +19,9 @@ export const createPedidoSchema = object({
    valor: number()
       .required("Valor is required")
       .transform((value, originalValue) => {
-         const numericString = originalValue.toString().replace(/[^\d.-]/g, "");
+         const numericString = originalValue
+            ?.toString()
+            .replace(/[^\d.-]/g, "");
          return parseFloat(numericString);
       })
       .test(

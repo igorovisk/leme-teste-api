@@ -5,7 +5,7 @@ const controller = new PedidoController();
 const router = Router();
 
 router
-   .route("/clientes/:clienteId/pedidos")
+   .route("/pedidos")
    .get(async (req: Request, res: Response, next: NextFunction) => {
       await controller.getAllPedidos(req, res, next);
    });

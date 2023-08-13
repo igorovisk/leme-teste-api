@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
-import { ClienteDTO, createUserSchema, updateUserSchema } from "../types/dtos";
+import {
+   ClienteDTO,
+   createClienteSchema,
+   updateClienteSchema,
+} from "../types/dtos";
 import { ClienteRepository } from "../repositories";
 import { BadRequestError } from "../helpers/errors";
 import { isCNPJ, formatToCNPJ, isCPF, formatToCPF } from "brazilian-values";
@@ -53,7 +57,7 @@ export class ClienteLogic {
             ativo: 1,
          };
 
-         await createUserSchema.validate(newCliente);
+         await createClienteSchema.validate(newCliente);
 
          const response = await this.repository.createCliente(newCliente);
          return response;
@@ -69,7 +73,7 @@ export class ClienteLogic {
       res: Response
    ): Promise<ClienteDTO | undefined> {
       try {
-         const { nome, cpf, data_nasc, telefone } = req.body;
+         const { nome, cpf, data_nasc, telefone, ativo } = req.body;
          if (!isCPF(cpf)) throw new BadRequestError("CPF is not valid.");
          const formattedCpf = formatToCPF(cpf);
          const updatedCliente = {
@@ -78,8 +82,9 @@ export class ClienteLogic {
             cpf: formattedCpf,
             data_nasc: new Date(data_nasc),
             telefone: telefone,
+            ativo: Number(ativo),
          };
-         await updateUserSchema.validate(updatedCliente);
+         await updateClienteSchema.validate(updatedCliente);
          const response = await this.repository.updateCliente(updatedCliente);
          return response;
       } catch (error: any) {

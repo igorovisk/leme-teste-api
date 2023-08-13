@@ -21,7 +21,7 @@ addMethod(string, "cpf", function () {
    });
 });
 
-export const createUserSchema = object({
+export const createClienteSchema = object({
    nome: string().required("Nome is required").min(3).max(255),
    cpf: string().required("CPF is required").max(15),
    data_nasc: date()
@@ -31,7 +31,7 @@ export const createUserSchema = object({
    ativo: number().min(1).max(1).required("Ativo status is required"),
 });
 
-export const updateUserSchema = object({
+export const updateClienteSchema = object({
    nome: string().required("Nome is required").min(3).max(255),
    cpf: string().required("CPF is required"),
    data_nasc: date()

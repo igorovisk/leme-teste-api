@@ -27,17 +27,24 @@ export class PedidoRepository {
    }
 
    async createPedido(pedido: PedidoInterface): Promise<PedidoDTO> {
-      await createPedidoSchema.validate(pedido);
-      const findCliente = await prisma.clientes.findUnique({
-         where: { id: pedido.cliente_id },
-      });
-      if (!findCliente) {
-         throw new BadRequestError(
-            "Error creating order. the clientId provided does belong to any client"
-         );
+      try {
+         await createPedidoSchema.validate(pedido);
+         const findCliente = await prisma.clientes.findUnique({
+            where: { id: Number(pedido.cliente_id) },
+         });
+         if (!findCliente) {
+            throw new BadRequestError(
+               "Error creating order. the clientId provided does belong to any client"
+            );
+         }
+         const newPedido = await prisma.pedidos.create({ data: pedido });
+         return newPedido;
+      } catch (error: any) {
+         if (error.errors) {
+            throw new BadRequestError(error?.errors?.[0]);
+         }
+         throw error;
       }
-      const newPedido = await prisma.pedidos.create({ data: pedido });
-      return newPedido;
    }
 
    async updatePedido(pedido: UpdatePedidoInterface): Promise<PedidoDTO> {
@@ -64,7 +71,7 @@ export class PedidoRepository {
          return updatedPedido;
       } catch (error: any) {
          if (error.errors) {
-            throw new BadRequestError(error.errors);
+            throw new BadRequestError(error.errors[0]);
          }
          throw error;
       }

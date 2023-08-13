@@ -11,6 +11,7 @@ type UpdatedClienteDate = {
    cpf: string;
    data_nasc: Date;
    telefone: string;
+   ativo: number;
 };
 
 export class ClienteRepository {
@@ -74,14 +75,13 @@ export class ClienteRepository {
                "Error updating client. This client does not exist"
             );
          }
-         const updateClientObj = {
-            ...updatedclienteData,
-            ativo: findCliente.ativo,
-         };
-
+         console.log(updatedclienteData, "updatedclienteData");
          const updatedCliente = await prisma.clientes.update({
-            where: { id: findCliente.id },
-            data: updateClientObj,
+            where: { id: updatedclienteData.id },
+            data: updatedclienteData,
+            include: {
+               pedidos: true,
+            },
          });
 
          return updatedCliente;
