@@ -34,7 +34,6 @@ export class PedidoImagensRepository {
             "Error uploading this image. No pedido found with this id"
          );
       }
-      console.log(findPedido, "findPedido");
       const updatedPedidoImagens = await prisma.pedido_imagens.update({
          where: { id: data.id },
          data: data,

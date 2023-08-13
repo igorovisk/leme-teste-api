@@ -55,7 +55,6 @@ export class PedidoRepository {
             produto: pedido.produto,
             valor: Number(pedido.valor),
             ativo: 0,
-            // imagens: pedido,
             pedido_status_id: pedido.pedido_status_id,
          };
          const updatedPedido = await prisma.pedidos.update({
@@ -65,7 +64,7 @@ export class PedidoRepository {
          return updatedPedido;
       } catch (error: any) {
          if (error.errors) {
-            console.log("oi");
+            throw new BadRequestError(error.errors);
          }
          throw error;
       }
@@ -86,7 +85,6 @@ export class PedidoRepository {
             produto: findPedido.produto,
             valor: findPedido.valor,
             ativo: 0,
-            // imagens: findPedido.imagens,
             pedido_status_id: findPedido.pedido_status_id,
          };
 
