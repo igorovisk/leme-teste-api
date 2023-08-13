@@ -9,3 +9,12 @@ export interface PedidoInterface {
    cliente_id: number;
    pedido_status_id: number;
 }
+
+export interface UpdatePedidoInterface {
+   id?: number;
+   produto: string;
+   valor: Decimal;
+   data: Date;
+   cliente_id: number;
+   pedido_status_id: number;
+}

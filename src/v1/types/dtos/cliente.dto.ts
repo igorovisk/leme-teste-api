@@ -1,14 +1,5 @@
 import { Pedidos } from "@prisma/client";
-import {
-   object,
-   string,
-   number,
-   date,
-   InferType,
-   addMethod,
-   AnyObject,
-   StringSchema,
-} from "yup";
+import { object, string, number, date, addMethod } from "yup";
 
 export interface ClienteDTO {
    id: number;
@@ -23,19 +14,15 @@ export interface ClienteDTO {
 }
 addMethod(string, "cpf", function () {
    return this.test("cpf", "Invalid CPF", (value) => {
-      if (!value) return true; // Allow empty values
-      const cpf = value.replace(/[^\d]/g, ""); // Remove non-digit characters
-
+      if (!value) return true;
+      const cpf = value.replace(/[^\d]/g, "");
       if (cpf.length < 14 || cpf.length > 15) return false;
-
-      // ... CPF validation logic ...
-
       return true;
    });
 });
 
 export const createUserSchema = object({
-   nome: string().required("Nome is required").min(3),
+   nome: string().required("Nome is required").min(3).max(255),
    cpf: string().required("CPF is required").max(15),
    data_nasc: date()
       .required("Date is required")
@@ -45,7 +32,7 @@ export const createUserSchema = object({
 });
 
 export const updateUserSchema = object({
-   nome: string().required("Nome is required").min(3),
+   nome: string().required("Nome is required").min(3).max(255),
    cpf: string().required("CPF is required"),
    data_nasc: date()
       .required("Date is required")

@@ -1,4 +1,4 @@
-import { PedidoInterface } from "../types/interface";
+import { PedidoInterface, UpdatePedidoInterface } from "../types/interface";
 import { PrismaClient } from "@prisma/client";
 import { PedidoDTO, createPedidoSchema } from "../types/dtos";
 import { BadRequestError } from "../../helpers/errors";
@@ -40,12 +40,35 @@ export class PedidoRepository {
       return newPedido;
    }
 
-   async updatePedido(pedido: PedidoInterface): Promise<PedidoDTO> {
-      const updatedPedido = await prisma.pedidos.update({
-         where: { id: pedido.id },
-         data: pedido,
-      });
-      return updatedPedido;
+   async updatePedido(pedido: UpdatePedidoInterface): Promise<PedidoDTO> {
+      try {
+         const findPedido = await prisma.pedidos.findUnique({
+            where: { id: Number(pedido.id) },
+         });
+         if (!findPedido) {
+            throw new BadRequestError("No order found with this id");
+         }
+         const updatedPedidoObj = {
+            id: Number(findPedido.id),
+            cliente_id: Number(pedido.cliente_id),
+            data: new Date(pedido.data),
+            produto: pedido.produto,
+            valor: Number(pedido.valor),
+            ativo: 0,
+            // imagens: pedido,
+            pedido_status_id: pedido.pedido_status_id,
+         };
+         const updatedPedido = await prisma.pedidos.update({
+            where: { id: findPedido.id },
+            data: updatedPedidoObj,
+         });
+         return updatedPedido;
+      } catch (error: any) {
+         if (error.errors) {
+            console.log("oi");
+         }
+         throw error;
+      }
    }
 
    async deletePedido(pedidoId: number): Promise<PedidoDTO> {

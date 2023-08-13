@@ -1,6 +1,6 @@
 import { Pedido_imagens } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime";
-import { object, string, number, date, InferType, array } from "yup";
+import { object, string, number, date, array } from "yup";
 export interface PedidoDTO {
    id: number;
    produto: string;
@@ -15,7 +15,22 @@ export interface PedidoDTO {
 }
 export const createPedidoSchema = object({
    produto: string().required("Produto is required").max(255),
-   valor: number().required("Valor is required"),
+
+   valor: number()
+      .required("Valor is required")
+      .transform((value, originalValue) => {
+         const numericString = originalValue.toString().replace(/[^\d.-]/g, "");
+         return parseFloat(numericString);
+      })
+      .test(
+         "max-precision",
+         "Valor must have at most 10 characters",
+         (value) => {
+            const stringValue = value.toString();
+            return stringValue.replace(".", "").length <= 10;
+         }
+      ),
+
    data: date()
       .required("Date is required")
       .typeError("Data must be the format YYYY-MM-DD"),

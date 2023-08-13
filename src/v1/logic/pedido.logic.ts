@@ -46,14 +46,6 @@ export class PedidoLogic {
          await createPedidoSchema.validate(newPedido);
          const response = await this.repository.createPedido(newPedido);
 
-         if (response) {
-            const imagemObj = {
-               pedido_id: response.id,
-               imagem: "imagem",
-               capa: "capa",
-            };
-            console.log(imagemObj, "response");
-         }
          return response;
       } catch (error: any) {
          if (error.errors) {
@@ -65,8 +57,7 @@ export class PedidoLogic {
 
    async updatePedido(req: Request, res: Response): Promise<PedidoDTO> {
       try {
-         const { produto, valor, data, ativo, imagens, pedido_status_id } =
-            req.body;
+         const { produto, valor, data, imagens, pedido_status_id } = req.body;
          const { clienteId, pedidoId } = req.params;
          if (
             !Object.values(PedidoStatusEnum).includes(Number(pedido_status_id))
@@ -75,13 +66,17 @@ export class PedidoLogic {
                "Invalid pedido_status value, Pedido Status must be: 1 - Solicitado | 2 - Concluído | 3 - Cancelado"
             );
          }
+         if (Number(valor).toFixed(2).replace(".", "").length > 10) {
+            throw new BadRequestError(
+               "Invalid valor. Valor must have at most 10 characters."
+            );
+         }
          const updatedPedido = {
             id: Number(pedidoId),
             cliente_id: Number(clienteId),
             data: new Date(data),
             produto: produto,
             valor: valor,
-            ativo: ativo,
             imagens: imagens,
             pedido_status_id: pedido_status_id,
          };
