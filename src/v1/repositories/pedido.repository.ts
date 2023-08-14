@@ -4,6 +4,7 @@ import { PedidoDTO, createPedidoSchema } from "../types/dtos";
 import { BadRequestError } from "../helpers/errors";
 const prisma = new PrismaClient();
 import fs from "fs";
+import { promisify } from "util";
 export class PedidoRepository {
    async getAllPedidos(): Promise<PedidoDTO[]> {
       const pedidos = await prisma.pedidos.findMany();
@@ -106,24 +107,25 @@ export class PedidoRepository {
    }
 
    async exportPedidos(): Promise<string> {
-      const pedidos = await prisma.pedidos.findMany();
-      const csvData = pedidos
-         .map((row) => Object.values(row).join(","))
-         .join("\n");
+      try {
+         const writeFileAsync = promisify(fs.writeFile);
+         const pedidos = await prisma.pedidos.findMany();
+         const csvData = pedidos
+            .map((row) => Object.values(row).join(","))
+            .join("\n");
 
-      const csvHeader = Object.keys(pedidos[0]).join(",");
-      const csvContent = `${csvHeader}\n${csvData}`;
-      const outputPath = "output.csv";
-      fs.writeFile(outputPath, csvContent, "utf-8", (error) => {
-         if (error) {
-            console.error("Error writing CSV file:", error);
-            throw error;
-         } else {
-            console.log(
-               `CSV file "${outputPath}" has been successfully written.`
-            );
-         }
-      });
-      return csvContent;
+         const csvHeader = Object.keys(pedidos[0]).join(",");
+         const csvContent = `${csvHeader}\n${csvData}`;
+
+         const outputPath = "output.csv";
+         await writeFileAsync(outputPath, csvContent, "utf-8");
+
+         console.log(`CSV file "${outputPath}" has been successfully written.`);
+
+         return outputPath;
+      } catch (error) {
+         console.error("Error exporting CSV:", error);
+         throw error;
+      }
    }
 }

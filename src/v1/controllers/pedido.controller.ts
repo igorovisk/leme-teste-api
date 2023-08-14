@@ -35,6 +35,8 @@ export class PedidoController {
 
    async exportPedidos(req: Request, res: Response, next: NextFunction) {
       const response = await this.logic.exportPedidos(req, res);
-      return res.status(200).send(response);
+      res.setHeader("Content-Disposition", `attachment; filename=pedidos.csv`);
+      res.sendFile(response, { root: __dirname });
+      res.status(200).send();
    }
 }

@@ -35,7 +35,7 @@ router
    });
 
 router
-   .route("/pedidos/exportcsv")
+   .route("/exportPedidos")
    .get(async (req: Request, res: Response, next: NextFunction) => {
       await controller.exportPedidos(req, res, next);
    });
