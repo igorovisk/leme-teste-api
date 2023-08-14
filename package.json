@@ -4,7 +4,7 @@
    "description": "Leme Inteligência Forense - Teste Técnico",
    "main": "app.js",
    "engines": {
-      "node": "16"
+      "node": "18"
    },
    "scripts": {
       "dev": "nodemon src/server.ts",
