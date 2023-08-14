@@ -2,3 +2,4 @@ node_modules
 uploads
 output.csv
 .DS_Store
+.env
