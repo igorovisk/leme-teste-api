@@ -3,3 +3,4 @@ uploads
 output.csv
 .DS_Store
 .env
+dist
