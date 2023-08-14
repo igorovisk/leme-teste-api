@@ -7,9 +7,9 @@
       "node": "16"
    },
    "scripts": {
-      "deploy": "node src/server.ts",
       "dev": "nodemon src/server.ts",
-      "test": "jest"
+      "test": "jest",
+      "build": "tsup src"
    },
    "prisma": {
       "seed": "ts-node prisma/seed.ts"
