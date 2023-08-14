@@ -1,15 +1,9 @@
 {
    "version": 2,
    "builds": [{ "src": "src/server.ts", "use": "@vercel/node" }],
-   "routes": [
-      {
-         "src": "/(.*)",
-         "dest": "src/server.ts"
-      }
-   ],
-   "env": {
-      "PRISMA_CLIENT_ENGINE_TYPE": "binary",
-      "NODE_OPTIONS": "--enable-source-maps",
-      "PRISMA_TELEMETRY_INFORMATION": "false"
+
+   "routes": {
+      "src": "/(.*)",
+      "dest": "src/server.ts"
    }
 }
