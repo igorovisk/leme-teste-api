@@ -9,8 +9,7 @@
    "scripts": {
       "dev": "nodemon src/server.ts",
       "test": "jest",
-      "build": "tsup src",
-      "start": "node dist/server.js"
+      "vercel-build": "npx prisma migrate deploy"
    },
    "prisma": {
       "seed": "ts-node prisma/seed.ts"
