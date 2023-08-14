@@ -1,10 +1,6 @@
 {
    "version": 2,
-   "builds": [
-      { "src": "src/server.ts", "use": "@vercel/node" },
-      { "src": "prisma/seed.ts", "use": "@now/node" }
-   ],
-
+   "builds": [{ "src": "src/server.ts", "use": "@vercel/node" }],
    "routes": [
       {
          "src": "/(.*)",
