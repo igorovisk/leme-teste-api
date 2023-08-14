@@ -7,12 +7,13 @@ export async function populate() {
       { descricao: "Concluído" },
       { descricao: "Cancelado" },
    ];
-
+   console.log("runned populate..");
    for (const status of statusData) {
       await prisma.pedidos_status.create({
          data: status,
       });
    }
+   console.log("end of populate");
 }
 
 populate()
