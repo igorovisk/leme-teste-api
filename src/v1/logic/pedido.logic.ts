@@ -43,7 +43,6 @@ export class PedidoLogic {
             ativo: 1,
             pedido_status_id: pedido_status_id,
          };
-         console.log(newPedido, "newPedido");
          // await createPedidoSchema.validate(newPedido);
          const response = await this.repository.createPedido(newPedido);
 
