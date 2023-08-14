@@ -13,7 +13,7 @@ const corsOrigin = {
    credentials: true,
    optionSuccessStatus: 200,
 };
-
+console.log("oi");
 const app = express();
 export class Server {
    static async init(app: Express) {
