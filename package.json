@@ -7,9 +7,9 @@
       "node": "18"
    },
    "scripts": {
-      "dev": "nodemon src/server.ts",
+      "dev": "prisma generate && prisma migrate deploy && prisma db push && ts-node prisma/populateDatabase.ts && nodemon src/server.ts",
       "test": "jest",
-      "vercel-build": "prisma migrate deploy && prisma db push && npx tsup src"
+      "vercel-build": "prisma migrate deploy && prisma db push && ts-node prisma/populateDatabase.ts && npx tsup src"
    },
    "prisma": {
       "seed": "ts-node prisma/seed.ts"
