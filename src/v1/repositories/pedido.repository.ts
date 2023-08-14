@@ -65,6 +65,7 @@ export class PedidoRepository {
             ativo: Number(pedido.ativo),
             pedido_status_id: Number(pedido.pedido_status_id),
          };
+
          const updatedPedido = await prisma.pedidos.update({
             where: { id: findPedido.id },
             data: updatedPedidoObj,
