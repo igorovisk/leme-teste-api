@@ -16,6 +16,7 @@ export interface UpdatePedidoInterface {
    produto: string;
    valor: Decimal;
    data: Date;
+   ativo: number;
    cliente_id: number;
    pedido_status_id: number;
    pedido_imagens_id?: number;

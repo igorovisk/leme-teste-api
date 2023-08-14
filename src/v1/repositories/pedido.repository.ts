@@ -61,7 +61,7 @@ export class PedidoRepository {
             data: new Date(pedido.data),
             produto: pedido.produto,
             valor: Number(pedido.valor),
-            ativo: 0,
+            ativo: Number(pedido.ativo),
             pedido_status_id: pedido.pedido_status_id,
          };
          const updatedPedido = await prisma.pedidos.update({

@@ -11,7 +11,7 @@ router
    });
 
 router
-   .route("/clientes/:clienteId/pedidos/:pedidoId")
+   .route("/pedidos/:pedidoId")
    .get(async (req: Request, res: Response, next: NextFunction) => {
       await controller.getPedidoById(req, res, next);
    });

@@ -32,7 +32,8 @@ export class PedidoLogic {
 
    async createPedido(req: Request, res: Response): Promise<PedidoDTO> {
       try {
-         const { produto, valor, data, imagem, pedido_status_id } = req.body;
+         const { produto, valor, data, imagem, pedido_status_id, ativo } =
+            req.body;
          const { clienteId } = req.params;
          const newPedido: PedidoInterface = {
             cliente_id: Number(clienteId),
@@ -57,7 +58,8 @@ export class PedidoLogic {
 
    async updatePedido(req: Request, res: Response): Promise<PedidoDTO> {
       try {
-         const { produto, valor, data, imagens, pedido_status_id } = req.body;
+         const { produto, valor, data, imagens, pedido_status_id, ativo } =
+            req.body;
          const { clienteId, pedidoId } = req.params;
          if (
             !Object.values(PedidoStatusEnum).includes(Number(pedido_status_id))
@@ -76,6 +78,7 @@ export class PedidoLogic {
             produto: produto,
             valor: valor,
             imagens: imagens,
+            ativo: ativo,
             pedido_status_id: pedido_status_id,
          };
 
