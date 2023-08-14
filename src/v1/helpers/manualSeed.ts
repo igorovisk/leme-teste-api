@@ -7,7 +7,7 @@ export async function populate() {
       { descricao: "Concluído" },
       { descricao: "Cancelado" },
    ];
-   console.log("runned populate..");
+   const teste = await prisma.pedidos_status.findMany();
    for (const status of statusData) {
       await prisma.pedidos_status.create({
          data: status,
@@ -24,3 +24,5 @@ populate()
    .finally(async () => {
       await prisma.$disconnect();
    });
+
+export default populate;

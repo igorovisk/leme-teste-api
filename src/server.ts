@@ -7,13 +7,12 @@ import { populate } from "./v1/helpers/manualSeed";
 require("dotenv").config();
 const port = process.env.PORT;
 var cors = require("cors");
-populate();
+// populate();
 const corsOrigin = {
    origin: true,
    credentials: true,
    optionSuccessStatus: 200,
 };
-console.log("oi");
 const app = express();
 export class Server {
    static async init(app: Express) {
