@@ -117,13 +117,12 @@ export class PedidoRepository {
 
          const csvHeader = Object.keys(pedidos[0]).join(",");
          const csvContent = `${csvHeader}\n${csvData}`;
+         console.log(csvContent, "csvContent");
+         return csvContent;
+         // const outputPath = "output.csv";
+         // await writeFileAsync(outputPath, csvContent, "utf-8");
 
-         const outputPath = "output.csv";
-         await writeFileAsync(outputPath, csvContent, "utf-8");
-
-         console.log(`CSV file "${outputPath}" has been successfully written.`);
-
-         return outputPath;
+         // return outputPath;
       } catch (error) {
          console.error("Error exporting CSV:", error);
          throw error;
