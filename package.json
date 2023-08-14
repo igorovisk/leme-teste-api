@@ -9,7 +9,8 @@
    "scripts": {
       "dev": "nodemon src/server.ts",
       "test": "jest",
-      "build": "tsup src"
+      "build": "tsup src",
+      "start": "node dist/server.js"
    },
    "prisma": {
       "seed": "ts-node prisma/seed.ts"
