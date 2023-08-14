@@ -9,6 +9,7 @@
    "scripts": {
       "dev": "nodemon src/server.ts",
       "test": "jest",
+      "build": "npx prisma generate && npx prisma migrate dev",
       "vercel-build": "npx prisma migrate dev"
    },
    "prisma": {
