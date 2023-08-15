@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
-import { PedidoDTO, createPedidoSchema } from "../types/dtos";
+import {
+   PedidoDTO,
+   createPedidoSchema,
+   updatePedidoSchema,
+} from "../types/dtos";
 import { PedidoInterface } from "../types/interface";
 import { PedidoStatusEnum } from "../types/enums";
 import { PedidoRepository } from "../repositories";
@@ -43,7 +47,7 @@ export class PedidoLogic {
             ativo: 1,
             pedido_status_id: pedido_status_id,
          };
-         // await createPedidoSchema.validate(newPedido);
+         await createPedidoSchema.validate(newPedido);
          const response = await this.repository.createPedido(newPedido);
 
          return response;
@@ -80,7 +84,7 @@ export class PedidoLogic {
             ativo: ativo,
             pedido_status_id: pedido_status_id,
          };
-
+         await updatePedidoSchema.validate(updatedPedido);
          const response = await this.repository.updatePedido(updatedPedido);
          return response;
       } catch (error: any) {
